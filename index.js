@@ -49,9 +49,33 @@ app.get("/movies/create", (req, res) => {
 });
 
 app.get("/movies/read", (req, res) => {
-  res.send({ status: 200, data: JSON.stringify(movies) });
+  res.send({ status: 200, data: movies });
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////
+// Step 6
+const moviesSorted = (res, filter) => {
+  res.send({
+    status: 200,
+    data: movies.sort((movie1, movie2) => {
+      return movie1[filter] > movie2[filter] ? 1 : -1;
+    }),
+  });
+};
+
+app.get("/movies/read/by-date", (req, res) => {
+  moviesSorted(res, "year");
+});
+
+app.get("/movies/read/by-rating", (req, res) => {
+  moviesSorted(res, "rating");
+});
+
+app.get("/movies/read/by-title", (req, res) => {
+  moviesSorted(res, "title");
+});
+
+///////////////////////////////////////////////////////////////////////////////////////
 app.get("/movies/update", (req, res) => {
   res.send({ status: 200, message: "Temporary" });
 });
