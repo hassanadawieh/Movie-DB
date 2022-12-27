@@ -3,10 +3,10 @@ const app = express();
 const port = 3000;
 
 const movies = [
-  { title: "Jaws", year: 1975, rating: 8 },
-  { title: "Avatar", year: 2009, rating: 7.8 },
-  { title: "Brazil", year: 1985, rating: 8 },
-  { title: "الإرهاب والكباب", year: 1992, rating: 6.2 },
+  { id: 1, title: "Jaws", year: 1975, rating: 8 },
+  { id: 2, title: "Avatar", year: 2009, rating: 7.8 },
+  { id: 3, title: "Brazil", year: 1985, rating: 8 },
+  { id: 4, title: "الإرهاب والكباب", year: 1992, rating: 6.2 },
 ];
 
 app.get("/", (req, res) => {
@@ -39,6 +39,14 @@ app.get("/search", (req, res) => {
   }
 
   res.send(response);
+});
+
+app.get("/movies/update", (req, res) => {
+  res.send({ status: 200, message: "Temporary" });
+});
+
+app.get("/movies/delete", (req, res) => {
+  res.send({ status: 200, message: "Temporary" });
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -76,12 +84,19 @@ app.get("/movies/read/by-title", (req, res) => {
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////
-app.get("/movies/update", (req, res) => {
-  res.send({ status: 200, message: "Temporary" });
-});
 
-app.get("/movies/delete", (req, res) => {
-  res.send({ status: 200, message: "Temporary" });
+app.get("/movies/read/id/:ID", (req, res) => {
+  movies.forEach((movie) => {
+    if (movie.id == req.params.ID) {
+      res.send({ status: 200, data: movie });
+      return;
+    }
+  });
+  res.send({
+    status: 404,
+    error: true,
+    message: `The movie ${req.params.ID} does not exist.`,
+  });
 });
 
 app.listen(port, () => {
