@@ -54,8 +54,26 @@ app.get("/search", (req, res) => {
   res.send(response);
 });
 
-app.get("/movies/update", (req, res) => {
-  res.send({ status: 200, message: "Temporary" });
+app.get("/movies/update/:ID", (req, res) => {
+  const title = req.query.title;
+  const rating = req.query.rating;
+  let selectedMovie;
+  movies.forEach((movie) => {
+    if (movie.id == req.params.ID) {
+      selectedMovie = movie;
+    }
+  });
+  if (selectedMovie == undefined) {
+    res.send({
+      status: 404,
+      error: true,
+      message: `The movie ${req.params.ID} does not exist.`,
+    });
+    return;
+  }
+  selectedMovie.title = title ? title : selectedMovie.title;
+  selectedMovie.rating = rating ? rating : selectedMovie.rating;
+  res.send({ status: 200, data: movies });
 });
 
 app.get("/movies/delete/:ID", (req, res) => {
