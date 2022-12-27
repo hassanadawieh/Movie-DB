@@ -5,7 +5,7 @@ const port = 3000;
 let newID = 5;
 const DEFAULT_RATING = 4;
 
-const movies = [
+let movies = [
   { id: 1, title: "Jaws", year: 1975, rating: 8 },
   { id: 2, title: "Avatar", year: 2009, rating: 7.8 },
   { id: 3, title: "Brazil", year: 1985, rating: 8 },
@@ -58,8 +58,21 @@ app.get("/movies/update", (req, res) => {
   res.send({ status: 200, message: "Temporary" });
 });
 
-app.get("/movies/delete", (req, res) => {
-  res.send({ status: 200, message: "Temporary" });
+app.get("/movies/delete/:ID", (req, res) => {
+  const newMovies = movies.filter((movie) => {
+    return movie.id != req.params.ID;
+  });
+
+  if (newMovies.length === movies.length) {
+    res.send({
+      status: 404,
+      error: true,
+      message: `the movie ${req.params.ID} does not exist`,
+    });
+    return;
+  }
+  movies = newMovies;
+  res.send({ status: 200, data: movies });
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////
