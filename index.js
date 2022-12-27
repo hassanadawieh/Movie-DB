@@ -54,7 +54,7 @@ app.get("/search", (req, res) => {
   res.send(response);
 });
 
-app.get("/movies/update/:ID", (req, res) => {
+app.put("/movies/update/:ID", (req, res) => {
   const title = req.query.title;
   const rating = req.query.rating;
   let selectedMovie;
@@ -76,7 +76,7 @@ app.get("/movies/update/:ID", (req, res) => {
   res.send({ status: 200, data: movies });
 });
 
-app.get("/movies/delete/:ID", (req, res) => {
+app.delete("/movies/delete/:ID", (req, res) => {
   const newMovies = movies.filter((movie) => {
     return movie.id != req.params.ID;
   });
@@ -96,7 +96,7 @@ app.get("/movies/delete/:ID", (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Step 5 & 8
 
-app.get("/movies/create", (req, res) => {
+app.post("/movies/create", (req, res) => {
   const title = req.query.title;
   const year = req.query.year;
   const rating = req.query.rating ? req.query.rating : DEFAULT_RATING;
