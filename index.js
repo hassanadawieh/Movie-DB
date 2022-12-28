@@ -1,6 +1,17 @@
+const bodyParser = require("body-parser");
 const express = require("express");
+const { MongoClient } = require("mongodb");
 const app = express();
 const port = 3000;
+const db = require("./db");
+let database;
+app.use(bodyParser.urlencoded({ extended: true }));
+MongoClient.connect(db.url, (err, db) => {
+  if (err) return;
+  console.log(err); //  Make sure you add the database name and not the collection name
+  database = db.db("codi");
+
+});
 
 let newID = 5;
 const DEFAULT_RATING = 4;
@@ -13,7 +24,6 @@ let movies = [
 ];
 
 const isValidYear = (year) => {
-  console.log(year);
   if (isNaN(year)) return false; // we only process strings!
 
   if (String(year).length !== 4) {
@@ -54,7 +64,7 @@ app.get("/search", (req, res) => {
   res.send(response);
 });
 
-app.put("/movies/update/:ID", (req, res) => {
+app.post("/movies/update/:ID", (req, res) => {
   const title = req.query.title;
   const rating = req.query.rating;
   let selectedMovie;
@@ -96,7 +106,7 @@ app.delete("/movies/delete/:ID", (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Step 5 & 8
 
-app.post("/movies/create", (req, res) => {
+app.get("/movies/create", (req, res) => {
   const title = req.query.title;
   const year = req.query.year;
   const rating = req.query.rating ? req.query.rating : DEFAULT_RATING;
@@ -109,6 +119,17 @@ app.post("/movies/create", (req, res) => {
     });
     return;
   }
+  database.collection("movies").insert(
+    {
+      id: newID++,
+      title,
+      year,
+      rating,
+    },
+    (err, result) => {
+      if (err) console.log(err);
+    }
+  );
   movies.push({
     id: newID++,
     title,
